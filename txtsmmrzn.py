@@ -1,9 +1,16 @@
-import streamlit as st
 import nltk
 from nltk.corpus import stopwords
 from nltk.cluster.util import cosine_distance
 import numpy as np
 import networkx as nx
+
+# Ensure NLTK dependencies are downloaded
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download("stopwords")
+
+# Function to calculate sentence similarity
 def sentence_similarity(sent1, sent2, stopwords=None):
     if stopwords is None:
         stopwords = []
@@ -27,6 +34,7 @@ def sentence_similarity(sent1, sent2, stopwords=None):
 
     return 1 - cosine_distance(vector1, vector2)
 
+# Function to build the similarity matrix
 def gen_sim_matrix(sentences, stop_words):
     similarity_matrix = np.zeros((len(sentences), len(sentences)))
 
@@ -38,6 +46,7 @@ def gen_sim_matrix(sentences, stop_words):
 
     return similarity_matrix
 
+# Function to summarize text
 def generate_summary(input_text, top_n=5):
     stop_words = stopwords.words('english')
     sentences = [sentence.split() for sentence in input_text.split(". ") if sentence]
@@ -56,6 +65,7 @@ def generate_summary(input_text, top_n=5):
 
     return ". ".join(summarize_text)
 
+# Streamlit Interface
 def main():
     st.title("Text Summarization using NLP")
     st.write("Enter your text below, and click 'Generate Summary'.")
@@ -63,7 +73,10 @@ def main():
     # Text Input
     input_text = st.text_area("Input Text", height=200, placeholder="Paste your text here...")
     
-    top_n = st.number_input("Number of sentences in the summary:", min_value=1, max_value=10, value=5)
+    # Fixed number of sentences for summary
+    top_n = 3  # You can adjust this number based on your preference
+    
+    # Button to generate summary
     if st.button("Generate Summary"):
         if input_text.strip():
             summary = generate_summary(input_text, top_n)
@@ -74,11 +87,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-st.markdown(
-    """
-    ---
-    About  
-    Built using 🐍 Python, 🖤 Streamlit, and Natural Language Processing (NLP) techniques.
-    """
-)
