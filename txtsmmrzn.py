@@ -1,14 +1,11 @@
-import nltk
+
 from nltk.corpus import stopwords
 from nltk.cluster.util import cosine_distance
 import numpy as np
 import networkx as nx
-
-# Ensure NLTK dependencies are downloaded
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download("stopwords")
+import nltk
+nltk.download("stopwords")
+nltk.download("punkt")  # Add this if needed for tokenization
 
 # Function to calculate sentence similarity
 def sentence_similarity(sent1, sent2, stopwords=None):
